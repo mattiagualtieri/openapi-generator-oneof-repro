@@ -1,0 +1,32 @@
+# Same as spec.yaml, minus the `description` on Shape. This is the control
+# case: it generates correctly (Circle.java only) on every version,
+# confirming the `description` field is what triggers the bug.
+openapi: 3.0.0
+info:
+  title: Shape API
+  version: "1"
+paths:
+  /shapes:
+    post:
+      operationId: createShape
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Shape"
+      responses:
+        "201":
+          description: Created
+components:
+  schemas:
+    Shape:
+      oneOf:
+        - $ref: "#/components/schemas/Circle"
+    Circle:
+      type: object
+      required: [kind, radius]
+      properties:
+        kind:
+          type: string
+        radius:
+          type: number

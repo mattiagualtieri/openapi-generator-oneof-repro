@@ -1,0 +1,34 @@
+# A `oneOf` with exactly one `$ref` sub-schema should be simplified away by
+# the generator, leaving only Circle. The `description` on Shape is the
+# actual trigger of the bug (see README) — remove it and the spec generates
+# correctly even on broken versions.
+openapi: 3.0.0
+info:
+  title: Shape API
+  version: "1"
+paths:
+  /shapes:
+    post:
+      operationId: createShape
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Shape"
+      responses:
+        "201":
+          description: Created
+components:
+  schemas:
+    Shape:
+      description: A shape to draw.
+      oneOf:
+        - $ref: "#/components/schemas/Circle"
+    Circle:
+      type: object
+      required: [kind, radius]
+      properties:
+        kind:
+          type: string
+        radius:
+          type: number
